@@ -7,6 +7,7 @@ const TodoItem = () => {
     const [postPerPage, setPostPerPage] = useState(3);
     const [currentPage, setCurrentPage] = useState(1);
    
+
     const handleInput = (e) => {
         setText(e.target.value);
     }
@@ -30,10 +31,10 @@ const TodoItem = () => {
 
         }
         setTodo([...todo, payload]);
-        console.log(todo.length);
+      //  console.log(todo.length);
         setText('');
     }
-
+  
     const handleUpdate = (id) => {
         const b = prompt("Enter new todo");
         const updatedTodo = todo.map((item) => {
@@ -67,6 +68,24 @@ const TodoItem = () => {
         })
         setTodo(a);
     }
+   
+    const handleDeleteAll = () => {
+        setTodo([]);
+    }
+    const handleSortByTitle = () => {
+        const res = todo.sort((a,b)=>{
+            if(a.title.toLowerCase() < b.title.toLowerCase()){
+                return -1;
+            }
+            if(a.title.toLowerCase() > b.title.toLowerCase()){
+                return 1;
+
+            }
+            return 0;
+        });
+            setTodo(res)    
+        setText("");
+    }
     let  end =  currentPage * postPerPage;
     let start = end - postPerPage;
     
@@ -76,6 +95,8 @@ const TodoItem = () => {
             <button onClick={handleAdd}>Add Todo</button>
             <button onClick={()=>handleFilterByStatus()}>completed tasks</button>
             <button onClick={()=>handleCompleteAll()}>complete All</button>
+            <button onClick={()=>handleDeleteAll()}>Delete All</button>
+            <button onClick={()=>handleSortByTitle()}>Sort By Title</button>
             <div>
                 {todo.slice(start, end).map((item)=>(
                     <div key={item.id}>
