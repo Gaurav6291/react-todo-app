@@ -1,11 +1,14 @@
 import React from 'react'
 
 const Pagination = ({postPerPage, totalPost, paginate, currentPage, nextPaginate, prevPaginate}) => {
-    const pageNumbers = [];
+   
+  const pageNumbers = [];
 
     for(let i=1; i<=Math.ceil(totalPost/postPerPage); i++){
         pageNumbers.push(i); 
     }
+
+     
     return (
         <div>
             
@@ -13,6 +16,8 @@ const Pagination = ({postPerPage, totalPost, paginate, currentPage, nextPaginate
     <li class={`page-item ${currentPage===1?"disabled":"page-item"}`}>
       <a class="page-link"  onClick={prevPaginate} href="!#">Previous</a>
     </li>
+      
+      
         {pageNumbers.map((number) => (
 
             <li class={`page-item ${currentPage===number?"active":"page-item"}`}  key={number}>
@@ -20,6 +25,7 @@ const Pagination = ({postPerPage, totalPost, paginate, currentPage, nextPaginate
             </li>
         ))}
   
+
     <li class={`page-item ${(totalPost<=3 || currentPage===Math.ceil(totalPost/postPerPage))?"disabled":"page-item"}`}>
       <a class="page-link" onClick={nextPaginate} href="!#">Next</a>
     </li>

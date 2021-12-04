@@ -1,8 +1,14 @@
 import React, {useState} from 'react';
 import {v4 as uuid} from 'uuid';
 import Pagination from './Pagination';
+import { useSelector, useDispatch } from 'react-redux';
+import { addTodos, DeleteTodo, toggleTodo, updateTodos } from '../Redux/Todos/actions';
+
+
 const TodoItem = () => {
-    const [todo, setTodo] = useState([]);
+    let todos = useSelector((state)=> state.todos);
+    const dispatch = useDispatch();
+    
     const [text, setText] = useState('');
     const [postPerPage, setPostPerPage] = useState(3);
     const [currentPage, setCurrentPage] = useState(1);
@@ -30,50 +36,59 @@ const TodoItem = () => {
             status:false
 
         }
-        setTodo([...todo, payload]);
+        // setTodo([...todo, payload]);
       //  console.log(todo.length);
-        setText('');
+        dispatch(addTodos(payload));
+      setText('');
     }
   
     const handleUpdate = (id) => {
         const b = prompt("Enter new todo");
-        const updatedTodo = todo.map((item) => {
-            return item.id===id ? {...item, title: b}: item
-        });
-        setTodo(updatedTodo);
+        // const updatedTodo = todo.map((item) => {
+        //     return item.id===id ? {...item, title: b}: item
+        // });
+        const payload={
+            title: b,
+            id: id,
+        }
+        dispatch(updateTodos(payload));
+        // setTodo(updatedTodo);
     }
     const toggleStatus = (id) => {
         
-    const b = todo.map((item) => {
-     return item.id===id ? {...item, status : !item.status}:item
-    })
-    setTodo(b);
+    // const b = todos.map((item) => {
+    //  return item.id===id ? {...item, status : !item.status}:item
+    // })
+    dispatch(toggleTodo(id));
+    // setTodo(b);
     }
 
     const handleDelete = (id) => {
-        const a = todo.filter((item)=>{
-            return item.id !== id
-        });
-        setTodo(a);
+        // const a = todos.filter((item)=>{
+        //     return item.id !== id
+        // });
+        // setTodo(a);
+        dispatch(DeleteTodo(id))
     }
     const handleFilterByStatus = () => {
-        const a = todo.filter((item) => {
+        const a = todos.filter((item) => {
             return item.status === true
         });
-        setTodo(a);
+        // setTodo(a);
     }
     const handleCompleteAll = () => {
-        const a = todo.map((item) => {
+        const a = todos.map((item) => {
             return {...item, status: true}
         })
-        setTodo(a);
+        // setTodo(a);
     }
    
     const handleDeleteAll = () => {
-        setTodo([]);
+        // setTodo([]);
+        todos = [];
     }
     const handleSortByTitle = () => {
-        const res = todo.sort((a,b)=>{
+        const res = todos.sort((a,b)=>{
             if(a.title.toLowerCase() < b.title.toLowerCase()){
                 return -1;
             }
@@ -82,12 +97,15 @@ const TodoItem = () => {
 
             }
             return 0;
+            // console.log(a.title.toLowerCase() - b.title.toLowerCase())
         });
-            setTodo(res)    
-        setText("");
+        
+            // setTodo(res)    
+        // setText("");
     }
-    let  end =  currentPage * postPerPage;
-    let start = end - postPerPage;
+
+    let  end =  currentPage * postPerPage; // 1*3=3, 2*3=6
+    let start = end - postPerPage; //3-3=0, 6-3=3
     
     return (
         <div>
@@ -98,7 +116,7 @@ const TodoItem = () => {
             <button onClick={()=>handleDeleteAll()}>Delete All</button>
             <button onClick={()=>handleSortByTitle()}>Sort By Title</button>
             <div>
-                {todo.slice(start, end).map((item)=>(
+                {todos.slice(start, end).map((item)=>(
                     <div key={item.id}>
                         <h2>{item.title}</h2>
                         <p>{item.status?"Done":"Not Done"}</p>
@@ -109,7 +127,7 @@ const TodoItem = () => {
                 ))}
             </div>
             <div style={{width:'500px', textAlign:'center', margin:'auto', padding:'3% 12%'}}>
-            <Pagination postPerPage={postPerPage} totalPost={todo.length} nextPaginate={nextPaginate} prevPaginate={prevPaginate} currentPage={currentPage} paginate={paginate} />
+            <Pagination postPerPage={postPerPage} totalPost={todos.length} nextPaginate={nextPaginate} prevPaginate={prevPaginate} currentPage={currentPage} paginate={paginate} />
             </div>
         </div>
     )
